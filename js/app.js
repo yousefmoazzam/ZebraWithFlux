@@ -6,6 +6,7 @@ var React = require('react');
 var ReactPanels = require('react-panels');
 
 var MainPane = require('./views/mainPane');
+var SidePane = require('./views/sidePane');
 
 var AppContainerStyle = {
   margin: 0,
@@ -23,11 +24,19 @@ var MainTabbedViewStyle = {
   display: 'inlineBlock'
 };
 
+var SideTabbedViewStyle = {
+  float: 'right',
+  "height": "100%",
+  "width": "100%",
+  maxWidth:400
+};
+
 var App = React.createClass({
   render: function(){
     return(
       <div id="appContainer" style={AppContainerStyle}>
         <div id="MainTabbedView" style={MainTabbedViewStyle}><MainPane/></div>
+        <div id="SideTabbedView" style={SideTabbedViewStyle}><SidePane/></div>
 
       </div>
     )
