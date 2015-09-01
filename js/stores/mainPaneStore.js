@@ -11,7 +11,8 @@ var CHANGE_EVENT = 'change';
 
 var _stuff = {
     footerState: false,
-    configPanelOpen: false
+    configPanelOpen: false,
+    favPanelOpen: false
 };
 
 var toggleFooter = function(){
@@ -20,6 +21,10 @@ var toggleFooter = function(){
 
 var toggleConfigPanel = function(){
   _stuff.configPanelOpen = !_stuff.configPanelOpen
+};
+
+var toggleFavPanel = function(){
+  _stuff.favPanelOpen = !_stuff.favPanelOpen
 };
 
 
@@ -35,6 +40,9 @@ var mainPaneStore = assign({}, EventEmitter.prototype, {
   },
   getConfigPanelState: function(){
     return _stuff.configPanelOpen;
+  },
+  getFavPanelState: function(){
+    return _stuff.favPanelOpen;
   },
   emitChange: function(){
     this.emit(CHANGE_EVENT)
@@ -59,6 +67,15 @@ AppDispatcher.register(function(payload){
           mainPaneStore.emitChange();
       console.log(_stuff.configPanelOpen);
           break;
+
+    case appConstants.FAV_TOGGLE:
+      console.log(payload);
+      console.log(action);
+          toggleFavPanel();
+          mainPaneStore.emitChange();
+      console.log(_stuff.favPanelOpen);
+          break;
+
     default:
           return true;
   }

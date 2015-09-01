@@ -18,6 +18,12 @@ var mainPaneActions = {
       actionType:appConstants.CONFIG_TOGGLE,
       item: item
     })
+  },
+  toggleFavPanel: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.FAV_TOGGLE,
+      item: item
+    })
   }
 };
 
@@ -76,7 +82,8 @@ React.render(
 
 var appConstants = {
   FOOTER_TOGGLE: "FOOTER_TOGGLE",
-  CONFIG_TOGGLE: "CONFIG_TOGGLE"
+  CONFIG_TOGGLE: "CONFIG_TOGGLE",
+  FAV_TOGGLE: "FAV_TOGGLE"
 };
 
 module.exports = appConstants;
@@ -123,7 +130,8 @@ var CHANGE_EVENT = 'change';
 
 var _stuff = {
     footerState: false,
-    configPanelOpen: false
+    configPanelOpen: false,
+    favPanelOpen: false
 };
 
 var toggleFooter = function(){
@@ -132,6 +140,10 @@ var toggleFooter = function(){
 
 var toggleConfigPanel = function(){
   _stuff.configPanelOpen = !_stuff.configPanelOpen
+};
+
+var toggleFavPanel = function(){
+  _stuff.favPanelOpen = !_stuff.favPanelOpen
 };
 
 
@@ -147,6 +159,9 @@ var mainPaneStore = assign({}, EventEmitter.prototype, {
   },
   getConfigPanelState: function(){
     return _stuff.configPanelOpen;
+  },
+  getFavPanelState: function(){
+    return _stuff.favPanelOpen;
   },
   emitChange: function(){
     this.emit(CHANGE_EVENT)
@@ -171,6 +186,15 @@ AppDispatcher.register(function(payload){
           mainPaneStore.emitChange();
       console.log(_stuff.configPanelOpen);
           break;
+
+    case appConstants.FAV_TOGGLE:
+      console.log(payload);
+      console.log(action);
+          toggleFavPanel();
+          mainPaneStore.emitChange();
+      console.log(_stuff.favPanelOpen);
+          break;
+
     default:
           return true;
   }
@@ -259,6 +283,8 @@ module.exports = ConfigButton;
  */
 
 var React = require('react');
+var mainPaneStore = require('../stores/mainPaneStore');
+var mainPaneActions = require('../actions/mainPaneActions');
 
 var ButtonStyle = {
   backgroundColor: 'grey',
@@ -283,21 +309,42 @@ var ButtonTitlePadding = {
 
 };
 
+function getFavButtonState(){
+  return{
+    favPanelOpen: mainPaneStore.getFavPanelState()
+  }
+}
+
 var FavButton = React.createClass({displayName: "FavButton",
   getInitialState: function(){
     return {
-
+      favPanelOpen: mainPaneStore.getFavPanelState()
     }
   },
 
-  render: function(){
-    var text = this.state.favourited ? "favourited" : "haven\'t favourited";
+  _onChange: function(){
+    this.setState(getFavButtonState)
+  },
 
+  handleActionFavToggle: function(){
+    mainPaneActions.toggleFavPanel("this is the item")
+  },
+
+  componentDidMount: function(){
+    mainPaneStore.addChangeListener(this._onChange)
+  },
+
+  componentWillUnmount: function(){
+    mainPaneStore.removeChangeListener(this._onChange)
+  },
+
+  render: function(){
     return(
       React.createElement("div", null, 
-        React.createElement("div", {id: "fav", style: ButtonStyle, className: this.state.condition ? "fillin" :"", onClick: this.handleClick}, React.createElement("span", {style: ButtonTitlePadding}, " Fav"))
+        React.createElement("div", {id: "fav", style: ButtonStyle, onClick: this.handleActionFavToggle}, React.createElement("span", {style: ButtonTitlePadding}, " Fav")
 
-
+        )
+        
       )
     );
   }
@@ -306,7 +353,7 @@ var FavButton = React.createClass({displayName: "FavButton",
 
 module.exports = FavButton;
 
-},{"react":188}],8:[function(require,module,exports){
+},{"../actions/mainPaneActions":1,"../stores/mainPaneStore":5,"react":188}],8:[function(require,module,exports){
 /**
  * Created by twi18192 on 25/08/15.
  */
@@ -331,17 +378,18 @@ var Button = ReactPanels.Button;
 function getMainPaneState(){
   return {
     footers: mainPaneStore.getFooterState(),
-    configPanelOpen: mainPaneStore.getConfigPanelState()
+    configPanelOpen: mainPaneStore.getConfigPanelState(),
+    favPanelOpen: mainPaneStore.getFavPanelState()
   }
 }
-
 
 var MainPane = React.createClass({displayName: "MainPane",
 
   getInitialState: function(){
     return {
       footers: mainPaneStore.getFooterState(),
-      configPanelOpen: mainPaneStore.getConfigPanelState()
+      configPanelOpen: mainPaneStore.getConfigPanelState(),
+      favPanelOpen: mainPaneStore.getFavPanelState()
     }
   },
 
@@ -386,7 +434,12 @@ var MainPane = React.createClass({displayName: "MainPane",
         React.createElement(Tab, {title: "Design", showFooter: this.state.footers}, 
           React.createElement(Content, null, "Secondary main view - graph of position data ", React.createElement("br", null), 
             "Contains a graph of the current position data, also has some buttons at the bottom to launch subscreens ", React.createElement("br", null), 
-            "Config panel is ", this.state.configPanelOpen ? 'open' : 'closed'
+            React.createElement("p", null, "Config panel is ", this.state.configPanelOpen ? 'open' : 'closed'), 
+
+            React.createElement("div", {className: this.state.configPanelOpen ? "border" : ""}), 
+
+            React.createElement("p", null, "Fav panel is ", this.state.favPanelOpen ? 'open' : 'closed')
+
           ), 
           React.createElement(Footer, null, React.createElement("div", {id: "blockDock"}, 
             React.createElement("div", {id: "buttonContainer"}, 

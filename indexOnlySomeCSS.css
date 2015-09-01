@@ -53,3 +53,10 @@ body {
   position: relative;
   margin-top: 39px;
 }
+
+.border {
+  background-color: green;
+  border: 2px solid black;
+  height: 100px;
+  width: 100px;
+}

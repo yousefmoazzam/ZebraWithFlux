@@ -3,6 +3,8 @@
  */
 
 var React = require('react');
+var mainPaneStore = require('../stores/mainPaneStore');
+var mainPaneActions = require('../actions/mainPaneActions');
 
 var ButtonStyle = {
   backgroundColor: 'grey',
@@ -27,21 +29,42 @@ var ButtonTitlePadding = {
 
 };
 
+function getFavButtonState(){
+  return{
+    favPanelOpen: mainPaneStore.getFavPanelState()
+  }
+}
+
 var FavButton = React.createClass({
   getInitialState: function(){
     return {
-
+      favPanelOpen: mainPaneStore.getFavPanelState()
     }
   },
 
-  render: function(){
-    var text = this.state.favourited ? "favourited" : "haven\'t favourited";
+  _onChange: function(){
+    this.setState(getFavButtonState)
+  },
 
+  handleActionFavToggle: function(){
+    mainPaneActions.toggleFavPanel("this is the item")
+  },
+
+  componentDidMount: function(){
+    mainPaneStore.addChangeListener(this._onChange)
+  },
+
+  componentWillUnmount: function(){
+    mainPaneStore.removeChangeListener(this._onChange)
+  },
+
+  render: function(){
     return(
       <div>
-        <div id="fav" style={ButtonStyle}  className={this.state.condition ? "fillin" :""} onClick={this.handleClick} ><span style={ButtonTitlePadding}> Fav</span></div>
+        <div id="fav" style={ButtonStyle} onClick={this.handleActionFavToggle} ><span style={ButtonTitlePadding}> Fav</span>
 
-
+        </div>
+        
       </div>
     );
   }

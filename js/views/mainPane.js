@@ -22,7 +22,8 @@ var Button = ReactPanels.Button;
 function getMainPaneState(){
   return {
     footers: mainPaneStore.getFooterState(),
-    configPanelOpen: mainPaneStore.getConfigPanelState()
+    configPanelOpen: mainPaneStore.getConfigPanelState(),
+    favPanelOpen: mainPaneStore.getFavPanelState()
   }
 }
 
@@ -31,7 +32,8 @@ var MainPane = React.createClass({
   getInitialState: function(){
     return {
       footers: mainPaneStore.getFooterState(),
-      configPanelOpen: mainPaneStore.getConfigPanelState()
+      configPanelOpen: mainPaneStore.getConfigPanelState(),
+      favPanelOpen: mainPaneStore.getFavPanelState()
     }
   },
 
@@ -76,7 +78,12 @@ var MainPane = React.createClass({
         <Tab title="Design" showFooter={this.state.footers}>
           <Content>Secondary main view - graph of position data <br/>
             Contains a graph of the current position data, also has some buttons at the bottom to launch subscreens <br/>
-            Config panel is {this.state.configPanelOpen ? 'open' : 'closed'}
+            <p>Config panel is {this.state.configPanelOpen ? 'open' : 'closed'}</p>
+
+            <div className={this.state.configPanelOpen ? "border" : ""}></div>
+
+            <p>Fav panel is {this.state.favPanelOpen ? 'open' : 'closed'}</p>
+
           </Content>
           <Footer><div id="blockDock">
             <div id="buttonContainer">

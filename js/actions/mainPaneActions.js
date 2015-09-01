@@ -17,6 +17,12 @@ var mainPaneActions = {
       actionType:appConstants.CONFIG_TOGGLE,
       item: item
     })
+  },
+  toggleFavPanel: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.FAV_TOGGLE,
+      item: item
+    })
   }
 };
 
