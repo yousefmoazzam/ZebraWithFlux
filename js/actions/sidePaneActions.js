@@ -17,6 +17,12 @@ var sidePaneActions = {
       actionType: appConstants.REMOVE_TAB,
       item: item
     })
+  },
+  dropdownMenuShow: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.DROPDOWN_SHOW,
+      item: item
+    })
   }
 
 };

@@ -6,6 +6,7 @@ var React = require('react');
 var ReactPanels = require('react-panels');
 var sidePaneStore = require('../stores/sidePaneStore');
 var sidePaneActions = require('../actions/sidePaneActions');
+var Dropdown = require('./dropdownMenu');
 
 var Panel = ReactPanels.Panel;
 var Tab = ReactPanels.Tab;
@@ -79,7 +80,7 @@ var SidePane = React.createClass({
             <i className="fa fa-times"></i>
           </Button>,
           <Button title="Drop down menu">
-          <div id="dropDown"></div>
+          <div id="dropDown"><Dropdown list={this.state.tabState} selected={this.state.tabState[0]} changeTab={this.dropDownChange} /></div>
           </Button>
         ]}>
         {tabs}
