@@ -8,6 +8,12 @@ var mainPaneStore = require('../stores/mainPaneStore');
 var mainPaneActions = require('../actions/mainPaneActions');
 var ConfigButton = require('./configButton');
 var FavButton = require('./favButton');
+var RedBlock = require('./redBlock');
+var BlueBlock = require('./blueBlock');
+var GreenBlock = require('./greenBlock');
+
+var sidePaneActions = require('../actions/sidePaneActions');
+var sidePaneStore = require('../stores/sidePaneStore'); /*not sure if this is allowed, but I'll give it a whirl :P*/
 
 
 
@@ -23,7 +29,10 @@ function getMainPaneState(){
   return {
     footers: mainPaneStore.getFooterState(),
     configPanelOpen: mainPaneStore.getConfigPanelState(),
-    favPanelOpen: mainPaneStore.getFavPanelState()
+    favPanelOpen: mainPaneStore.getFavPanelState(),
+    redBlockPropertiesClicked: sidePaneStore.getRedBlockTabClicked(),
+    blueBlockPropertiesClicked:sidePaneStore.getBlueBlockTabClicked(),
+    greenBlockPropertiesClicked: sidePaneStore.getGreenBlockTabClicked()
   }
 }
 
@@ -33,7 +42,10 @@ var MainPane = React.createClass({
     return {
       footers: mainPaneStore.getFooterState(),
       configPanelOpen: mainPaneStore.getConfigPanelState(),
-      favPanelOpen: mainPaneStore.getFavPanelState()
+      favPanelOpen: mainPaneStore.getFavPanelState(),
+      redBlockPropertiesClicked: sidePaneStore.getRedBlockTabClicked(),
+      blueBlockPropertiesClicked: sidePaneStore.getBlueBlockTabClicked(),
+      greenBlockPropertiesClicked: sidePaneStore.getGreenBlockTabClicked()
     }
   },
 
@@ -45,13 +57,89 @@ var MainPane = React.createClass({
     mainPaneActions.toggleFooter1("this is the item")
   },
 
+  handleActionAddTab: function(stuff){
+    sidePaneActions.addTab(stuff)
+  },
+
+  //handleActionChangeRedBlockState: function(){
+  //  sidePaneActions.redBlockStateChange("this is the item")
+  //},
+
+  handleActionRedBlockPropertiesClicked: function(){
+    sidePaneActions.redBlockTabOpen("this is the item")
+  },
+
+  handleActionBlueBlockPropertiesClicked: function(){
+    sidePaneActions.blueBlockTabOpen("this is the item")
+  },
+
+  handleActionGreenBlockPropertiesClicked: function(){
+    sidePaneActions.greenBlockTabOpen("this is the item")
+  },
+
   componentDidMount: function(){
     mainPaneStore.addChangeListener(this._onChange);
+    sidePaneStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function(){
     mainPaneStore.removeChangeListener(this._onChange);
   },
+
+  changeClickedObjectProperties: function(selectedObject){
+    var selectedObject = selectedObject;
+    var selectedDiv = selectedObject.target;
+    var selectedDispatchMarker = selectedObject.dispatchMarker;
+    console.log(selectedObject);
+    console.log(selectedDiv);
+    console.log(selectedDispatchMarker);
+
+    switch(selectedDispatchMarker){
+      case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.1':
+            //this.setState({redBlockPropertiesClicked: true}); /*need a separate handleAction for each block most likely*/
+        this.handleActionRedBlockPropertiesClicked();
+        var tabToAdd = "RedBlock";
+        //sidePaneActions.redBlockTabOpen();
+            break;
+      case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.2':
+            //this.setState({blueBlockPropertiesClicked: true});
+        this.handleActionBlueBlockPropertiesClicked();
+        var tabToAdd = "BlueBlock";
+            break;
+      case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.3':
+            //this.setState({greenBlockPropertiesClicked: true});
+        this.handleActionGreenBlockPropertiesClicked();
+        var tabToAdd = "GreenBlock";
+            break;
+
+      default:
+            return 'default'
+    }
+
+    //this.handleActionAddTab(tabToAdd);
+
+    console.log(tabToAdd);
+    //console.log(this.state.redBlockPropertiesClicked);
+
+    //this.setState({objectPropertiesClicked: true});
+
+    //var selectedObjectProperties = redBlock.name; not sure if needed, can access the redBlock object simply through the imported module
+    //this.showObjectProperties(selectedObject) /*use it to pass the clicked block object info to the showObjectProperties function*/
+  },
+
+  //showObjectProperties: function(selectedObject){
+  //  console.log(selectedObject);
+  //  var objectProperties = selectedObject; /* currently the div that contains the object, not the actual React component*/
+  //  console.log("something is happening");
+  //  if(this.state.redBlockPropertiesClicked === true){
+  //    console.log("if statement");
+  //    return objectProperties
+  //  }
+  //  else{
+  //    console.log("else statement");
+  //    return "uihy"
+  //  }
+  //},
 
   render: function() {
     return(
@@ -61,7 +149,46 @@ var MainPane = React.createClass({
           </ToggleButton>
         ]}>
         <Tab title="View" showFooter={this.state.footers}>
-          <Content>Content of View Tab
+          <Content><p>Content of View Tab</p>
+            <div id="redBlock" onClick={this.changeClickedObjectProperties}>
+            </div>
+            <div id="blueBlock" onClick={this.changeClickedObjectProperties}>
+            </div>
+            <div id="greenBlock" onClick={this.changeClickedObjectProperties}>
+            </div>
+
+          <p>
+            {(() => {
+              var RedBlockInfo = RedBlock.getRedBlockInfo();
+              switch (this.state.redBlockPropertiesClicked) {
+                case true: return RedBlockInfo;
+                case false: return "nada";
+                default: return "default";
+              }
+            })()}
+          </p>
+
+            <p>
+              {(() => {
+                var BlueBlockInfo = BlueBlock.getBlueBlockInfo();
+                switch (this.state.blueBlockPropertiesClicked) {
+                  case true: return BlueBlockInfo;
+                  case false: return "nada";
+                  default: return "default";
+                }
+              })()}
+            </p>
+
+            <p>
+              {(() => {
+                var GreenBlockInfo = GreenBlock.getGreenBlockInfo();
+                switch (this.state.greenBlockPropertiesClicked) {
+                  case true: return GreenBlockInfo;
+                  case false: return "nada";
+                  default: return "default";
+                }
+              })()}
+            </p>
 
 
           </Content>

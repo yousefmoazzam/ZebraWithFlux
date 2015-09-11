@@ -33,7 +33,7 @@
 div.dropdown-container {
   width: 32px;
   font-family: @font-family;
-  &.show>div.dropdown-list {
+  &.handleActionShow>div.dropdown-list {
     width: 125px;             /**/
     .transform(scale(1, 1));
   }

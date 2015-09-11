@@ -10,16 +10,111 @@ var assign = require('object-assign');
 var CHANGE_EVENT = 'change';
 
 var _stuff = {
-  tabState: ["first"
-  ],
-
-  dropdownListVisible: false
+  tabState: [],
+  dropdownListVisible: false,
+  selectedTabIndex: 0
 };
 
-var addTab = function(){
+var allBlockTabProperties = {
+  redBlockTabOpen: false,
+  blueBlockTabOpen: false,
+  greenBlockTabOpen: false
+};
+
+var checkWhichBlockTabsOpen = function(){
+  var blockTabsOpen = []; /* fill this array with all the block tabs open, and then proceed to concatenate the original tab list with this one*/
+  for (var key in allBlockTabProperties){
+    console.log(key)
+    console.log(allBlockTabProperties[key]);
+    if(allBlockTabProperties[key] === true) {
+      console.log('just before starting the tabState checker loop')
+      if(_stuff.tabState.length === 0){
+        console.log('tabState was empty, tab is now open');
+        var blockTabsOpen = [];
+        var updatedBlockTabsOpen = blockTabsOpen.concat(key);
+        console.log(updatedBlockTabsOpen);
+        console.log(blockTabsOpen)
+        _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
+      }
+      else{
+        for (var i = 0; i < _stuff.tabState.length; i++) {
+          console.log('in the non-empty tabState checker loop');
+          console.log(_stuff.tabState.length)
+          console.log(i)
+          if (_stuff.tabState[i] === key) {
+            console.log("tab is already open from before, don't add, break statement occurring")
+            break
+          }
+          else if(_stuff.tabState[i] !== key){
+            console.log('key isnt equal to the ith position, move onto the next value in tabState');
+            console.log(_stuff.tabState.length);
+            console.log(i)
+            if(i === _stuff.tabState.length - 1){
+              console.log('tabState didnt have this tab, tab is now open');
+              var blockTabsOpen = [];
+              var updatedBlockTabsOpen = blockTabsOpen.concat(key);
+              console.log(updatedBlockTabsOpen);
+              console.log(blockTabsOpen)
+              _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
+            }
+          }
+        }
+        console.log('finished the tabState checker loop')
+      }
+    }
+    else{
+    console.log('tab is not open')
+    }
+  }
+
+  console.log(blockTabsOpen)
+  console.log(updatedBlockTabsOpen)
+  console.log(_stuff.tabState);
+
+  //blockTabsOpen = []; /* resetting blockTabsOpen for the next time a tab is opened
+  // Actually, no need since at the start of the function it is reset*/
+
+  //return updatedBlockTabsOpen;
+
+};
+
+var changeRedBlockTabState = function(){
+  if(allBlockTabProperties.redBlockTabOpen === false) {
+    allBlockTabProperties.redBlockTabOpen = true;
+    checkWhichBlockTabsOpen()
+  }
+  else{
+
+  }
+};
+
+var changeBlueBlockTabState = function(){
+  if(allBlockTabProperties.blueBlockTabOpen === false){
+    allBlockTabProperties.blueBlockTabOpen = true;
+    checkWhichBlockTabsOpen()
+  }
+  else{
+
+  }
+};
+
+var changeGreenBlockTabState = function(){
+  if(allBlockTabProperties.greenBlockTabOpen === false){
+    allBlockTabProperties.greenBlockTabOpen = true;
+    checkWhichBlockTabsOpen()
+  }
+  else{
+
+  }
+};
+
+
+
+
+
+var addTab = function(newtab){
   /* set state of tabs somewhere here*/
-  var newTabs = _stuff.tabState.concat(
-    ("0000" + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-4));
+  var newTabs = _stuff.tabState.concat(newtab);
   _stuff.tabState = newTabs;
   /* could you just skip the variable newTabs and set _stuff.tabState equal
   itself concatenated?
@@ -27,15 +122,68 @@ var addTab = function(){
 };
 
 var removeTab = function(item){
-  /* code for removing tabs*/
 
+  var tabName = _stuff.tabState[item];
+  switch(tabName){
+
+    case 'redBlockTabOpen':
+      allBlockTabProperties.redBlockTabOpen = false;
+      console.log(allBlockTabProperties.redBlockTabOpen);
+          break;
+
+    case 'blueBlockTabOpen':
+      allBlockTabProperties.blueBlockTabOpen = false;
+      console.log(allBlockTabProperties.blueBlockTabOpen);
+          break;
+
+    case 'greenBlockTabOpen':
+      allBlockTabProperties.greenBlockTabOpen = false;
+      console.log(allBlockTabProperties.greenBlockTabOpen);
+          break;
+
+    default:
+      console.log('default');
+      return 'default'
+  }
+  /* code for removing tabs*/
+  console.log(tabName);
   var newTabs = _stuff.tabState;  /*setting up the current state of tabs, and then getting rid of the currently selected tab*/
   newTabs.splice(item, 1);
   _stuff.tabState = newTabs;
+
+
+
 };
 
 var dropdownMenuShow = function(){
-  _stuff.dropdownListVisible = true
+  _stuff.dropdownListVisible = true;
+  document.addEventListener("click", dropdownMenuHide)
+};
+
+var dropdownMenuHide = function(){
+  _stuff.dropdownListVisible = false;
+  //console.log("dropdown hide is doing something");
+  //console.log(_stuff.dropdownListVisible);
+  sidePaneStore.emitChange();
+  document.removeEventListener("click", dropdownMenuHide)
+
+};
+
+//var calculateTabs = function(){
+//  var tabs = _stuff.tabState.map(function(item, i){
+//    var tabTitle = "Tab " + item;
+//    var tabIndex = i + 1;
+//  })
+//};
+
+var dropdownMenuSelect = function(item){
+  var findTheIndex = _stuff.tabState.indexOf(item);
+  //this.props.changeTab(findTheIndex)
+  _stuff.selectedTabIndex = findTheIndex;
+};
+
+var reactPanelSelect = function(){
+  /* need this to somehow invoke the dropdownmenuchange function in SidePane! */
 };
 
 var sidePaneStore = assign({}, EventEmitter.prototype, {
@@ -51,6 +199,21 @@ var sidePaneStore = assign({}, EventEmitter.prototype, {
   getDropdownState: function(){
     return _stuff.dropdownListVisible;
   },
+  //getCalculateTabs: function(){
+  //  calculateTabs()
+  //},
+  getSelectedTabIndex: function(){
+    return _stuff.selectedTabIndex;
+  },
+  getRedBlockTabClicked: function(){
+    return allBlockTabProperties.redBlockTabOpen;
+  },
+  getBlueBlockTabClicked: function(){
+    return allBlockTabProperties.blueBlockTabOpen;
+  },
+  getGreenBlockTabClicked: function(){
+    return allBlockTabProperties.greenBlockTabOpen;
+  },
   emitChange: function(){
     this.emit(CHANGE_EVENT)
   }
@@ -63,7 +226,7 @@ AppDispatcher.register(function(payload){
     case appConstants.ADD_TAB:
       console.log(payload);
       console.log(action);
-          addTab();
+          addTab(item);
           sidePaneStore.emitChange();
       console.log(_stuff.tabState);
           break;
@@ -75,6 +238,7 @@ AppDispatcher.register(function(payload){
           removeTab(item);
           sidePaneStore.emitChange();
       console.log(_stuff.tabState);
+      console.log(allBlockTabProperties.redBlockTabOpen);
           break;
 
     case appConstants.DROPDOWN_SHOW:
@@ -83,6 +247,58 @@ AppDispatcher.register(function(payload){
           dropdownMenuShow();
           sidePaneStore.emitChange();
       console.log(_stuff.dropdownListVisible);
+          break;
+
+    case appConstants.DROPDOWN_HIDE:
+      console.log(payload);
+      console.log(action);
+          dropdownMenuHide();
+          sidePaneStore.emitChange();
+      console.log(_stuff.dropdownListVisible);
+          break;
+
+    case appConstants.DROPDOWN_SELECT:
+      console.log(payload);
+      console.log(action); /* this tells you what the name of the selected tab is, for debugging purposes*/
+          dropdownMenuSelect(item);
+          sidePaneStore.emitChange();
+          break;
+
+    case appConstants.REACTPANEL_SELECT:
+          break;
+
+    case appConstants.REDBLOCKTAB_OPEN:
+      console.log(payload);
+      console.log(action);
+          changeRedBlockTabState();
+      console.log(allBlockTabProperties.redBlockTabOpen);
+          //checkWhichBlockTabsOpen();
+          sidePaneStore.emitChange();
+          break;
+
+
+
+    //case appConstants.REDBLOCKSTATE_CHANGE:
+    //  console.log(payload);
+    //  console.log(action);
+    //      changeRedBlockTabState();
+    //      sidePaneStore.emitChange();
+    //      break;
+
+    case appConstants.BLUEBLOCKTAB_OPEN:
+      console.log(payload);
+      console.log(action);
+          changeBlueBlockTabState();
+      console.log(allBlockTabProperties.blueBlockTabOpen);
+          sidePaneStore.emitChange();
+          break;
+
+    case appConstants.GREENBLOCKTAB_OPEN:
+      console.log(payload);
+      console.log(action);
+          changeGreenBlockTabState();
+      console.log(allBlockTabProperties.greenBlockTabOpen);
+          sidePaneStore.emitChange();
           break;
 
     default:

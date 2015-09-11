@@ -18,7 +18,8 @@ var Button = ReactPanels.Button;
 
 function getSidePaneState(){
   return{
-    tabState: sidePaneStore.getTabState()
+    tabState: sidePaneStore.getTabState(),
+    selectedTabIndex: sidePaneStore.getSelectedTabIndex()
   }
 }
 
@@ -26,12 +27,16 @@ var SidePane = React.createClass({
 
   getInitialState: function(){
     return{
-      tabState: sidePaneStore.getTabState()
+      tabState: sidePaneStore.getTabState(),
+      selectedTabIndex: sidePaneStore.getSelectedTabIndex()
     }
   },
 
   _onChange: function(){
-    this.setState(getSidePaneState())
+    this.setState(getSidePaneState());
+    //this.refs.panel.setSelectedIndex(this.state.selectedTabIndex, null);
+    /* this works, but I'm not convinced that this is the 'Flux' way to do things...
+    UPDATE: actually it doesn't work, selected tab content jumps about!*/
   },
 
   handleActionAddTab: function(){
@@ -51,8 +56,9 @@ var SidePane = React.createClass({
     sidePaneStore.removeChangeListener(this._onChange)
   },
 
-  dropDownChange:function(findTheIndex) {
-    this.refs.panel.setSelectedIndex(findTheIndex, null)
+  dropdownChange:function(tab) {
+    this.refs.panel.setSelectedIndex(tab, null);
+    console.log("it ran correctly");
   },
 
   render: function () {
@@ -80,7 +86,7 @@ var SidePane = React.createClass({
             <i className="fa fa-times"></i>
           </Button>,
           <Button title="Drop down menu">
-          <div id="dropDown"><Dropdown list={this.state.tabState} selected={this.state.tabState[0]} changeTab={this.dropDownChange} /></div>
+          <div id="dropDown"><Dropdown list={this.state.tabState} changeTab={this.dropdownChange} /></div>
           </Button>
         ]}>
         {tabs}

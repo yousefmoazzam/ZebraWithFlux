@@ -8,7 +8,9 @@ var sidePaneActions = require('../actions/sidePaneActions');
 
 function getDropdownState(){
   return{
-    listVisible: sidePaneStore.getDropdownState()
+    listVisible: sidePaneStore.getDropdownState(),
+    tabState: sidePaneStore.getTabState(),
+    selectedTabIndex: sidePaneStore.getSelectedTabIndex()
   }
 }
 
@@ -17,7 +19,9 @@ var Dropdown = React.createClass({
 
   getInitialState: function() {
     return {
-      listVisible: sidePaneStore.getDropdownState()
+      listVisible: sidePaneStore.getDropdownState(),
+      tabState: sidePaneStore.getTabState(),
+      selectedTabIndex: sidePaneStore.getSelectedTabIndex()
     };
   },
 
@@ -29,6 +33,20 @@ var Dropdown = React.createClass({
     sidePaneActions.dropdownMenuShow("this is the item")
   },
 
+  handleActionHide: function(){
+    sidePaneActions.dropdownMenuHide("this is the item")
+  },
+
+  //handleActionDropdownSelect: function(item){
+  //  sidePaneActions.dropdownMenuSelect(item);
+  //  this.props.changeTab(this.state.selectedTabIndex);
+  //  //this.handleActionReactPanelSelect()
+  //},
+  //
+  //handleActionReactPanelSelect: function(){
+  //  sidePaneActions.reactPanelSelect("this is the item")
+  //},
+
   componentDidMount: function(){
     sidePaneStore.addChangeListener(this._onChange)
   },
@@ -38,19 +56,9 @@ var Dropdown = React.createClass({
   },
 
   select: function(item) {
-    this.props.selected = item;
+    var test = item;
     var findTheIndex = this.props.list.indexOf(item);
     this.props.changeTab(findTheIndex)
-  },
-
-  show: function() {
-    this.setState({ listVisible: true });
-    document.addEventListener("click", this.hide);
-  },
-
-  hide: function() {
-    this.setState({ listVisible: false });
-    document.removeEventListener("click", this.hide);
   },
 
   renderListItems: function() {
@@ -67,14 +75,8 @@ var Dropdown = React.createClass({
 
   render: function(){
 
-    var props = React.addons.update({}, {$merge: {}}),
-      keys = Object.keys(this.props);
 
-    for (var i = keys.length; --i >= 0;) {
-      if (["children"].indexOf(keys[i]) != -1) continue;
-      props[keys[i]] = this.props[keys[i]];
-    }
-    return <div className={"dropdown-container" + (this.state.listVisible ? " show" : "")}>
+    return <div className={"dropdown-container" + (this.state.listVisible ? " handleActionShow" : "")}>
       <div className={"dropdown-display" + (this.state.listVisible ? " clicked": "")} onClick={this.handleActionShow}>
         <span ></span>
         <i className="fa fa-angle-down"></i>

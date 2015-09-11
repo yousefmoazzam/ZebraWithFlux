@@ -23,6 +23,51 @@ var sidePaneActions = {
       actionType: appConstants.DROPDOWN_SHOW,
       item: item
     })
+  },
+  dropdownMenuHide: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.DROPDOWN_HIDE,
+      item: item
+    })
+  },
+  dropdownMenuSelect: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.DROPDOWN_SELECT,
+      item: item
+    })
+  },
+  reactPanelSelect: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.REACTPANEL_SELECT,
+      item: item
+    })
+  },
+  redBlockTabOpen: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.REDBLOCKTAB_OPEN,
+      item: item
+    })
+  },
+
+  //redBlockStateChange: function(item){
+  //  AppDispatcher.handleAction({
+  //    actionType: appConstants.REDBLOCKSTATE_CHANGE,
+  //    item: item
+  //  })
+  //},
+
+  blueBlockTabOpen: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.BLUEBLOCKTAB_OPEN,
+      item: item
+    })
+  },
+
+  greenBlockTabOpen: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.GREENBLOCKTAB_OPEN,
+      item: item
+    })
   }
 
 };

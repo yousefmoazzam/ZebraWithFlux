@@ -60,3 +60,26 @@ body {
   height: 100px;
   width: 100px;
 }
+
+#redBlock {
+  background-color: red;
+  height: 100px;
+  width: 100px;
+}
+
+#blueBlock {
+  background-color: blue;
+  height: 100px;
+  width: 100px;
+}
+
+#greenBlock {
+  background-color: green;
+  height: 100px;
+  width: 100px;
+}
+
+#check {
+  height: 100%;
+  width: 100%;
+}

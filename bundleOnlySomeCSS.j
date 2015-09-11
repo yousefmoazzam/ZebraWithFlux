@@ -327,60 +327,21 @@ var allBlockTabProperties = {
 var checkWhichBlockTabsOpen = function(){
   var blockTabsOpen = []; /* fill this array with all the block tabs open, and then proceed to concatenate the original tab list with this one*/
   for (var key in allBlockTabProperties){
-    console.log(key)
     console.log(allBlockTabProperties[key]);
-    if(allBlockTabProperties[key] === true) {
-      console.log('just before starting the tabState checker loop')
-      if(_stuff.tabState.length === 0){
-        console.log('tabState was empty, tab is now open');
-        var blockTabsOpen = [];
-        var updatedBlockTabsOpen = blockTabsOpen.concat(key);
-        console.log(updatedBlockTabsOpen);
-        console.log(blockTabsOpen)
-        _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
-      }
-      else{
-        for (var i = 0; i < _stuff.tabState.length; i++) {
-          console.log('in the non-empty tabState checker loop');
-          console.log(_stuff.tabState.length)
-          console.log(i)
-          if (_stuff.tabState[i] === key) {
-            console.log("tab is already open from before, don't add, break statement occurring")
-            break
-          }
-          else if(_stuff.tabState[i] !== key){
-            console.log('key isnt equal to the ith position, move onto the next value in tabState');
-            console.log(_stuff.tabState.length);
-            console.log(i)
-            if(i === _stuff.tabState.length - 1){
-              console.log('tabState didnt have this tab, tab is now open');
-              var blockTabsOpen = [];
-              var updatedBlockTabsOpen = blockTabsOpen.concat(key);
-              console.log(updatedBlockTabsOpen);
-              console.log(blockTabsOpen)
-              _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
-            }
-          }
-
-        }
-
-        console.log('finished the tabState checker loop')
-      }
-
+    if(allBlockTabProperties[key] === true){
+      var updatedBlockTabsOpen = blockTabsOpen.concat(key);
     }
     else{
-    console.log('tab is not open')
+
     }
   }
-
-  console.log(blockTabsOpen)
-  console.log(updatedBlockTabsOpen)
+  _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
   console.log(_stuff.tabState);
 
   //blockTabsOpen = []; /* resetting blockTabsOpen for the next time a tab is opened
   // Actually, no need since at the start of the function it is reset*/
 
-  //return updatedBlockTabsOpen;
+  return updatedBlockTabsOpen;
 
 };
 
