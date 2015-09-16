@@ -65,18 +65,36 @@ body {
   background-color: red;
   height: 100px;
   width: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#redBlock:hover {
+  cursor: pointer;
 }
 
 #blueBlock {
   background-color: blue;
   height: 100px;
   width: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#blueBlock:hover {
+  cursor: pointer;
 }
 
 #greenBlock {
   background-color: green;
   height: 100px;
   width: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#greenBlock:hover {
+  cursor: pointer;
 }
 
 #check {

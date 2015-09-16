@@ -12,6 +12,7 @@ var RedBlock = require('./redBlock');
 var BlueBlock = require('./blueBlock');
 var GreenBlock = require('./greenBlock');
 
+var SidePane = require('./sidePane');
 var sidePaneActions = require('../actions/sidePaneActions');
 var sidePaneStore = require('../stores/sidePaneStore'); /*not sure if this is allowed, but I'll give it a whirl :P*/
 
@@ -61,10 +62,6 @@ var MainPane = React.createClass({
     sidePaneActions.addTab(stuff)
   },
 
-  //handleActionChangeRedBlockState: function(){
-  //  sidePaneActions.redBlockStateChange("this is the item")
-  //},
-
   handleActionRedBlockPropertiesClicked: function(){
     sidePaneActions.redBlockTabOpen("this is the item")
   },
@@ -77,6 +74,10 @@ var MainPane = React.createClass({
     sidePaneActions.greenBlockTabOpen("this is the item")
   },
 
+  handleActionTabChangeViaOtherMeans: function(tab){
+    sidePaneActions.switchTabWhenTabOpens(tab)
+  },
+
   componentDidMount: function(){
     mainPaneStore.addChangeListener(this._onChange);
     sidePaneStore.addChangeListener(this._onChange);
@@ -84,6 +85,7 @@ var MainPane = React.createClass({
 
   componentWillUnmount: function(){
     mainPaneStore.removeChangeListener(this._onChange);
+    sidePaneStore.removeChangeListener(this._onChange);
   },
 
   changeClickedObjectProperties: function(selectedObject){
@@ -98,17 +100,20 @@ var MainPane = React.createClass({
       case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.1':
             //this.setState({redBlockPropertiesClicked: true}); /*need a separate handleAction for each block most likely*/
         this.handleActionRedBlockPropertiesClicked();
+        //this.handleActionTabChangeViaOtherMeans('Red block');
         var tabToAdd = "RedBlock";
         //sidePaneActions.redBlockTabOpen();
             break;
       case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.2':
             //this.setState({blueBlockPropertiesClicked: true});
         this.handleActionBlueBlockPropertiesClicked();
+        //this.handleActionTabChangeViaOtherMeans('Blue block');
         var tabToAdd = "BlueBlock";
             break;
       case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.3':
             //this.setState({greenBlockPropertiesClicked: true});
         this.handleActionGreenBlockPropertiesClicked();
+        //this.handleActionTabChangeViaOtherMeans('Green block');
         var tabToAdd = "GreenBlock";
             break;
 
@@ -127,19 +132,6 @@ var MainPane = React.createClass({
     //this.showObjectProperties(selectedObject) /*use it to pass the clicked block object info to the showObjectProperties function*/
   },
 
-  //showObjectProperties: function(selectedObject){
-  //  console.log(selectedObject);
-  //  var objectProperties = selectedObject; /* currently the div that contains the object, not the actual React component*/
-  //  console.log("something is happening");
-  //  if(this.state.redBlockPropertiesClicked === true){
-  //    console.log("if statement");
-  //    return objectProperties
-  //  }
-  //  else{
-  //    console.log("else statement");
-  //    return "uihy"
-  //  }
-  //},
 
   render: function() {
     return(
@@ -226,3 +218,21 @@ var MainPane = React.createClass({
 });
 
 module.exports = MainPane;
+
+//handleActionChangeRedBlockState: function(){
+//  sidePaneActions.redBlockStateChange("this is the item")
+//},
+
+//showObjectProperties: function(selectedObject){
+//  console.log(selectedObject);
+//  var objectProperties = selectedObject; /* currently the div that contains the object, not the actual React component*/
+//  console.log("something is happening");
+//  if(this.state.redBlockPropertiesClicked === true){
+//    console.log("if statement");
+//    return objectProperties
+//  }
+//  else{
+//    console.log("else statement");
+//    return "uihy"
+//  }
+//},

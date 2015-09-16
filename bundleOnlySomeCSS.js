@@ -66,10 +66,10 @@ var sidePaneActions = {
       item: item
     })
   },
-  dropdownMenuSelect: function(item){
+  dropdownMenuSelect: function(tab, ReactComponent){
     AppDispatcher.handleAction({
       actionType: appConstants.DROPDOWN_SELECT,
-      item: item
+      item: {item: tab, component: ReactComponent}
     })
   },
   reactPanelSelect: function(item){
@@ -102,6 +102,20 @@ var sidePaneActions = {
   greenBlockTabOpen: function(item){
     AppDispatcher.handleAction({
       actionType: appConstants.GREENBLOCKTAB_OPEN,
+      item: item
+    })
+  },
+
+  switchTabWhenTabOpens: function(tab){
+    AppDispatcher.handleAction({
+      actionType: appConstants.SWITCHTAB_WHENTABOPENS,
+      item: tab
+    })
+  },
+
+  passingSidePane: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.PASSING_SIDEPANE,
       item: item
     })
   }
@@ -181,7 +195,9 @@ var appConstants = {
   //REDBLOCKSTATE_CHANGE: "REDBLOCKSTATE_CHANGE",
 
   BLUEBLOCKTAB_OPEN: "BLUEBLOCKTAB_OPEN",
-  GREENBLOCKTAB_OPEN: "GREENBLOCKTAB_OPEN"
+  GREENBLOCKTAB_OPEN: "GREENBLOCKTAB_OPEN",
+  SWITCHTAB_WHENTABOPENS: "SWITCHTAB_WHENTABOPENS",
+  PASSING_SIDEPANE: "PASSING_SIDEPANE"
 };
 
 module.exports = appConstants;
@@ -318,6 +334,24 @@ var _stuff = {
   selectedTabIndex: 0
 };
 
+var allBlockContent = {
+  redBlockContent: {
+    name: "Red block",
+    hack: "redBlockTabOpen",
+    info: {height: "100 pixels", width: "100 pixels"}
+  },
+  blueBlockContent: {
+    name: "Blue block",
+    hack: "blueBlockTabOpen",
+    info: {height: "100 pixels", width: "100 pixels"}
+  },
+  greenBlockContent: {
+    name: "Green block",
+    hack: "greenBlockTabOpen",
+    info: {height: "100 pixels", width: "100 pixels"}
+  }
+};
+
 var allBlockTabProperties = {
   redBlockTabOpen: false,
   blueBlockTabOpen: false,
@@ -334,7 +368,20 @@ var checkWhichBlockTabsOpen = function(){
       if(_stuff.tabState.length === 0){
         console.log('tabState was empty, tab is now open');
         var blockTabsOpen = [];
-        var updatedBlockTabsOpen = blockTabsOpen.concat(key);
+        switch(key){
+          case 'redBlockTabOpen':
+                var updatedBlockTabsOpen = blockTabsOpen.concat(allBlockContent.redBlockContent);
+                break;
+          case 'blueBlockTabOpen':
+                var updatedBlockTabsOpen = blockTabsOpen.concat(allBlockContent.blueBlockContent);
+                break;
+          case 'greenBlockTabOpen':
+                var updatedBlockTabsOpen = blockTabsOpen.concat(allBlockContent.greenBlockContent);
+                break;
+          default:
+                return 'default'
+        }
+        //var updatedBlockTabsOpen = blockTabsOpen.concat(key);
         console.log(updatedBlockTabsOpen);
         console.log(blockTabsOpen)
         _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
@@ -344,29 +391,39 @@ var checkWhichBlockTabsOpen = function(){
           console.log('in the non-empty tabState checker loop');
           console.log(_stuff.tabState.length)
           console.log(i)
-          if (_stuff.tabState[i] === key) {
+          if (_stuff.tabState[i].hack === key) {
             console.log("tab is already open from before, don't add, break statement occurring")
             break
           }
-          else if(_stuff.tabState[i] !== key){
+          else if(_stuff.tabState[i].hack !== key){
             console.log('key isnt equal to the ith position, move onto the next value in tabState');
             console.log(_stuff.tabState.length);
             console.log(i)
             if(i === _stuff.tabState.length - 1){
               console.log('tabState didnt have this tab, tab is now open');
               var blockTabsOpen = [];
-              var updatedBlockTabsOpen = blockTabsOpen.concat(key);
+              switch(key){
+                case 'redBlockTabOpen':
+                  var updatedBlockTabsOpen = blockTabsOpen.concat(allBlockContent.redBlockContent);
+                  break;
+                case 'blueBlockTabOpen':
+                  var updatedBlockTabsOpen = blockTabsOpen.concat(allBlockContent.blueBlockContent);
+                  break;
+                case 'greenBlockTabOpen':
+                  var updatedBlockTabsOpen = blockTabsOpen.concat(allBlockContent.greenBlockContent);
+                  break;
+                default:
+                  return 'default'
+              }
+              //var updatedBlockTabsOpen = blockTabsOpen.concat(key);
               console.log(updatedBlockTabsOpen);
               console.log(blockTabsOpen)
               _stuff.tabState = _stuff.tabState.concat(updatedBlockTabsOpen);
             }
           }
-
         }
-
         console.log('finished the tabState checker loop')
       }
-
     }
     else{
     console.log('tab is not open')
@@ -418,6 +475,8 @@ var changeGreenBlockTabState = function(){
 
 
 
+
+
 var addTab = function(newtab){
   /* set state of tabs somewhere here*/
   var newTabs = _stuff.tabState.concat(newtab);
@@ -429,7 +488,7 @@ var addTab = function(newtab){
 
 var removeTab = function(item){
 
-  var tabName = _stuff.tabState[item];
+  var tabName = _stuff.tabState[item].hack;
   switch(tabName){
 
     case 'redBlockTabOpen':
@@ -456,9 +515,6 @@ var removeTab = function(item){
   var newTabs = _stuff.tabState;  /*setting up the current state of tabs, and then getting rid of the currently selected tab*/
   newTabs.splice(item, 1);
   _stuff.tabState = newTabs;
-
-
-
 };
 
 var dropdownMenuShow = function(){
@@ -482,15 +538,65 @@ var dropdownMenuHide = function(){
 //  })
 //};
 
-var dropdownMenuSelect = function(item){
-  var findTheIndex = _stuff.tabState.indexOf(item);
-  //this.props.changeTab(findTheIndex)
-  _stuff.selectedTabIndex = findTheIndex;
+
+
+
+
+
+var dropdownMenuSelect = function(tab, ReactComponent){
+  //var findTheIndex = _stuff.tabState.indexOf(item);
+  ////this.props.changeTab(findTheIndex)
+  //_stuff.selectedTabIndex = findTheIndex;
+
+  var test = tab;
+  console.log(tab);
+  console.log(ReactComponent);
+  //var keepingSidePane = ReactComponent;
+  //keepSidePane(ReactComponent);
+  //console.log(keepingSidePane);
+
+  for(var i = 0; i < _stuff.tabState.length; i++){
+    if(_stuff.tabState[i].name === tab){
+      var findTheIndex = i
+    }
+  }
+  //
+  //var findTheIndex = this.props.list.indexOf(item);
+  ReactComponent.refs.panel.setSelectedIndex(findTheIndex);
+  keepSidePane(ReactComponent)
 };
 
-var reactPanelSelect = function(){
-  /* need this to somehow invoke the dropdownmenuchange function in SidePane! */
+var keepSidePane = function(testSidePane){ /*Ok, this saves 'SidePane' how I want it, so I can refer to it via this.refs.panel to use the select tab function*/
+  console.log('alternative select function is running');
+  console.log(testSidePane);               /* Not sure if/how this'll actually work, since it relies on dropdownMenuSelect running first? */
+  return testSidePane
 };
+
+var switchTabWhenTabOpens = function(tab){
+  var passedComponent = passedSidePane;
+  console.log(passedComponent);
+  console.log(tab);
+
+  for(var i = 0; i < _stuff.tabState.length; i++){
+    if(_stuff.tabState[i].name === tab){
+      var findTheIndex = i
+    }
+  }
+  passedComponent.refs.panel.setSelectedIndex(findTheIndex);
+};
+
+var passSidePane = function(component){
+  var passedComponent = {component: component}
+};
+
+//var reactPanelSelect = function(){
+//  /* need this to somehow invoke the dropdownmenuchange function in SidePane! */
+//};
+
+
+
+
+
 
 var sidePaneStore = assign({}, EventEmitter.prototype, {
   addChangeListener: function(cb){
@@ -564,9 +670,12 @@ AppDispatcher.register(function(payload){
           break;
 
     case appConstants.DROPDOWN_SELECT:
+      var tab = item.item;
+      var component = item.component;
+
       console.log(payload);
       console.log(action); /* this tells you what the name of the selected tab is, for debugging purposes*/
-          dropdownMenuSelect(item);
+          dropdownMenuSelect(tab, component);
           sidePaneStore.emitChange();
           break;
 
@@ -604,6 +713,21 @@ AppDispatcher.register(function(payload){
       console.log(action);
           changeGreenBlockTabState();
       console.log(allBlockTabProperties.greenBlockTabOpen);
+          sidePaneStore.emitChange();
+          break;
+
+    case appConstants.SWITCHTAB_WHENTABOPENS:
+      console.log(payload);
+      console.log(action);
+          switchTabWhenTabOpens(item);
+          sidePaneStore.emitChange();
+          break;
+
+    case appConstants.PASSING_SIDEPANE:
+      console.log(payload);
+      console.log(item);
+      var passedSidePane = item;
+      return passedSidePane;
           sidePaneStore.emitChange();
           break;
 
@@ -758,6 +882,10 @@ var Dropdown = React.createClass({displayName: "Dropdown",
   //  sidePaneActions.reactPanelSelect("this is the item")
   //},
 
+  testSelectInvokeSidePane: function(item){
+    this.props.changeTab(item)
+  },
+
   componentDidMount: function(){
     sidePaneStore.addChangeListener(this._onChange)
   },
@@ -766,17 +894,25 @@ var Dropdown = React.createClass({displayName: "Dropdown",
     sidePaneStore.removeChangeListener(this._onChange)
   },
 
-  select: function(item) {
-    var test = item;
-    var findTheIndex = this.props.list.indexOf(item);
-    this.props.changeTab(findTheIndex)
-  },
+  //select: function(item) {
+  //  var test = item;
+  //  console.log(item);
+  //
+  //  for(var i = 0; i < this.props.list.length; i++){
+  //    if(this.props.list[i].name === item){
+  //      var findTheIndex = i
+  //    }
+  //  }
+  //  //
+  //  //var findTheIndex = this.props.list.indexOf(item);
+  //  this.props.changeTab(findTheIndex)
+  //},
 
   renderListItems: function() {
     var items = [];
-    for (var i = 0; i < this.props.list.length; i++) {
-      var item = this.props.list[i];
-      items.push(React.createElement("div", {onClick: this.select.bind(null, item)}, 
+    for (var i = 0; i < this.state.tabState.length; i++) {
+      var item = this.state.tabState[i].name;
+      items.push(React.createElement("div", {onClick: this.testSelectInvokeSidePane.bind(null, item)}, 
         React.createElement("span", null, item)
       ));
     }
@@ -914,6 +1050,7 @@ var RedBlock = require('./redBlock');
 var BlueBlock = require('./blueBlock');
 var GreenBlock = require('./greenBlock');
 
+var SidePane = require('./sidePane');
 var sidePaneActions = require('../actions/sidePaneActions');
 var sidePaneStore = require('../stores/sidePaneStore'); /*not sure if this is allowed, but I'll give it a whirl :P*/
 
@@ -979,6 +1116,10 @@ var MainPane = React.createClass({displayName: "MainPane",
     sidePaneActions.greenBlockTabOpen("this is the item")
   },
 
+  handleActionTabChangeViaOtherMeans: function(tab){
+    sidePaneActions.switchTabWhenTabOpens(tab)
+  },
+
   componentDidMount: function(){
     mainPaneStore.addChangeListener(this._onChange);
     sidePaneStore.addChangeListener(this._onChange);
@@ -986,6 +1127,7 @@ var MainPane = React.createClass({displayName: "MainPane",
 
   componentWillUnmount: function(){
     mainPaneStore.removeChangeListener(this._onChange);
+    sidePaneStore.removeChangeListener(this._onChange);
   },
 
   changeClickedObjectProperties: function(selectedObject){
@@ -1000,17 +1142,20 @@ var MainPane = React.createClass({displayName: "MainPane",
       case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.1':
             //this.setState({redBlockPropertiesClicked: true}); /*need a separate handleAction for each block most likely*/
         this.handleActionRedBlockPropertiesClicked();
+        //this.handleActionTabChangeViaOtherMeans('Red block');
         var tabToAdd = "RedBlock";
         //sidePaneActions.redBlockTabOpen();
             break;
       case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.2':
             //this.setState({blueBlockPropertiesClicked: true});
         this.handleActionBlueBlockPropertiesClicked();
+        //this.handleActionTabChangeViaOtherMeans('Blue block');
         var tabToAdd = "BlueBlock";
             break;
       case '.0.0.0.1.$tabb-0.$=1$=010=2$0.0.0.3':
             //this.setState({greenBlockPropertiesClicked: true});
         this.handleActionGreenBlockPropertiesClicked();
+        //this.handleActionTabChangeViaOtherMeans('Green block');
         var tabToAdd = "GreenBlock";
             break;
 
@@ -1129,7 +1274,7 @@ var MainPane = React.createClass({displayName: "MainPane",
 
 module.exports = MainPane;
 
-},{"../actions/mainPaneActions":1,"../actions/sidePaneActions":2,"../stores/mainPaneStore":6,"../stores/sidePaneStore":7,"./blueBlock":8,"./configButton":9,"./favButton":11,"./greenBlock":12,"./redBlock":14,"react":195,"react-panels":22}],14:[function(require,module,exports){
+},{"../actions/mainPaneActions":1,"../actions/sidePaneActions":2,"../stores/mainPaneStore":6,"../stores/sidePaneStore":7,"./blueBlock":8,"./configButton":9,"./favButton":11,"./greenBlock":12,"./redBlock":14,"./sidePane":15,"react":195,"react-panels":22}],14:[function(require,module,exports){
 /**
  * Created by twi18192 on 04/09/15.
  */
@@ -1207,29 +1352,50 @@ var SidePane = React.createClass({displayName: "SidePane",
     sidePaneActions.removeTab(selectedIndex);
   },
 
+  handleActionTabChangeViaOtherMeans: function(tab){
+    console.log(tab);
+    sidePaneActions.dropdownMenuSelect(tab, this);
+    console.log("action function for changing tab via other means ran correctly");
+  },
+
+  handleActionPassingSidePaneOnMount: function(){
+    console.log(this);
+    sidePaneActions.passingSidePane(this)
+  },
+
   componentDidMount: function(){
-    sidePaneStore.addChangeListener(this._onChange)
+    sidePaneStore.addChangeListener(this._onChange);
+    this.handleActionPassingSidePaneOnMount()
   },
 
   componentWillUnmount: function(){
     sidePaneStore.removeChangeListener(this._onChange)
   },
-
-  dropdownChange:function(tab) {
-    this.refs.panel.setSelectedIndex(tab, null);
-    console.log("it ran correctly");
-  },
+  //
+  //dropdownChange:function(tab) {
+  //  this.refs.panel.setSelectedIndex(tab, null);
+  //  console.log(tab)
+  //  console.log("it ran correctly");
+  //},
 
   render: function () {
     var skin = this.props.skin || "default",
       globals = this.props.globals || {};
     var tabs = this.state.tabState.map(function(item, i) {
-      var tabTitle = "Tab " + item;
+      var tabTitle = "Tab " + item.name;
       var tabIndex = i + 1;
+      var tabContent = function(){
+        var content = [];
+        for (var key in item.info){                      /*can't use .map since item.info is an object, not an array*/
+          content.push(React.createElement("p", null, key, ": ", item.info[key]))
+        }
+        return {content}
+      };
       return (
-        React.createElement(Tab, {key: item, title: tabTitle}, 
+        React.createElement(Tab, {key: item.name, title: tabTitle}, 
 
-          React.createElement(Content, null, "Content of ", tabTitle, " ", React.createElement("br", null), " Tab number ", tabIndex
+          React.createElement(Content, null, "Content of ", tabTitle, " ", React.createElement("br", null), " Tab number ", tabIndex, 
+            tabContent()
           )
 
         )
@@ -1238,14 +1404,14 @@ var SidePane = React.createClass({displayName: "SidePane",
     return (
       React.createElement(Panel, {ref: "panel", theme: "flexbox", skin: skin, useAvailableHeight: true, globals: globals, buttons: [
 
-          React.createElement(Button, {title: "Add another tab", onButtonClick: this.handleActionAddTab}, 
-            React.createElement("i", {className: "fa fa-plus"})
-          ),
+          //<Button title="Add another tab" onButtonClick={this.handleActionAddTab}>
+          //  <i className="fa fa-plus"></i>
+          //</Button>,
           React.createElement(Button, {title: "Remove active tab", onButtonClick: this.handleActionRemoveTab}, 
             React.createElement("i", {className: "fa fa-times"})
           ),
           React.createElement(Button, {title: "Drop down menu"}, 
-          React.createElement("div", {id: "dropDown"}, React.createElement(Dropdown, {list: this.state.tabState, changeTab: this.dropdownChange}))
+          React.createElement("div", {id: "dropDown"}, React.createElement(Dropdown, {changeTab: this.handleActionTabChangeViaOtherMeans}))
           )
         ]}, 
         tabs

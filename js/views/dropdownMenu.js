@@ -37,15 +37,9 @@ var Dropdown = React.createClass({
     sidePaneActions.dropdownMenuHide("this is the item")
   },
 
-  //handleActionDropdownSelect: function(item){
-  //  sidePaneActions.dropdownMenuSelect(item);
-  //  this.props.changeTab(this.state.selectedTabIndex);
-  //  //this.handleActionReactPanelSelect()
-  //},
-  //
-  //handleActionReactPanelSelect: function(){
-  //  sidePaneActions.reactPanelSelect("this is the item")
-  //},
+  testSelectInvokeSidePane: function(item){
+    this.props.changeTab(item)
+  },
 
   componentDidMount: function(){
     sidePaneStore.addChangeListener(this._onChange)
@@ -55,17 +49,11 @@ var Dropdown = React.createClass({
     sidePaneStore.removeChangeListener(this._onChange)
   },
 
-  select: function(item) {
-    var test = item;
-    var findTheIndex = this.props.list.indexOf(item);
-    this.props.changeTab(findTheIndex)
-  },
-
   renderListItems: function() {
     var items = [];
-    for (var i = 0; i < this.props.list.length; i++) {
-      var item = this.props.list[i];
-      items.push(<div onClick={this.select.bind(null, item)}>
+    for (var i = 0; i < this.state.tabState.length; i++) {
+      var item = this.state.tabState[i].name;
+      items.push(<div onClick={this.testSelectInvokeSidePane.bind(null, item)}>
         <span >{item}</span>
       </div>);
     }
@@ -92,3 +80,30 @@ var Dropdown = React.createClass({
 });
 
 module.exports = Dropdown;
+
+
+//handleActionDropdownSelect: function(item){
+//  sidePaneActions.dropdownMenuSelect(item);
+//  this.props.changeTab(this.state.selectedTabIndex);
+//  //this.handleActionReactPanelSelect()
+//},
+//
+//handleActionReactPanelSelect: function(){
+//  sidePaneActions.reactPanelSelect("this is the item")
+//},
+
+
+
+//select: function(item) {
+//  var test = item;
+//  console.log(item);
+//
+//  for(var i = 0; i < this.props.list.length; i++){
+//    if(this.props.list[i].name === item){
+//      var findTheIndex = i
+//    }
+//  }
+//  //
+//  //var findTheIndex = this.props.list.indexOf(item);
+//  this.props.changeTab(findTheIndex)
+//},

@@ -30,10 +30,10 @@ var sidePaneActions = {
       item: item
     })
   },
-  dropdownMenuSelect: function(item){
+  dropdownMenuSelect: function(tab, ReactComponent){
     AppDispatcher.handleAction({
       actionType: appConstants.DROPDOWN_SELECT,
-      item: item
+      item: {item: tab, component: ReactComponent}
     })
   },
   reactPanelSelect: function(item){
@@ -66,6 +66,20 @@ var sidePaneActions = {
   greenBlockTabOpen: function(item){
     AppDispatcher.handleAction({
       actionType: appConstants.GREENBLOCKTAB_OPEN,
+      item: item
+    })
+  },
+
+  switchTabWhenTabOpens: function(tab){
+    AppDispatcher.handleAction({
+      actionType: appConstants.SWITCHTAB_WHENTABOPENS,
+      item: tab
+    })
+  },
+
+  passingSidePane: function(item){
+    AppDispatcher.handleAction({
+      actionType: appConstants.PASSING_SIDEPANE,
       item: item
     })
   }

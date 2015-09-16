@@ -48,29 +48,50 @@ var SidePane = React.createClass({
     sidePaneActions.removeTab(selectedIndex);
   },
 
+  handleActionTabChangeViaOtherMeans: function(tab){
+    console.log(tab);
+    sidePaneActions.dropdownMenuSelect(tab, this);
+    console.log("action function for changing tab via other means ran correctly");
+  },
+
+  handleActionPassingSidePaneOnMount: function(){
+    console.log(this);
+    sidePaneActions.passingSidePane(this)
+  },
+
   componentDidMount: function(){
-    sidePaneStore.addChangeListener(this._onChange)
+    sidePaneStore.addChangeListener(this._onChange);
+    this.handleActionPassingSidePaneOnMount()
   },
 
   componentWillUnmount: function(){
     sidePaneStore.removeChangeListener(this._onChange)
   },
-
-  dropdownChange:function(tab) {
-    this.refs.panel.setSelectedIndex(tab, null);
-    console.log("it ran correctly");
-  },
+  //
+  //dropdownChange:function(tab) {
+  //  this.refs.panel.setSelectedIndex(tab, null);
+  //  console.log(tab)
+  //  console.log("it ran correctly");
+  //},
 
   render: function () {
     var skin = this.props.skin || "default",
       globals = this.props.globals || {};
     var tabs = this.state.tabState.map(function(item, i) {
-      var tabTitle = "Tab " + item;
+      var tabTitle = "Tab " + item.name;
       var tabIndex = i + 1;
+      var tabContent = function(){
+        var content = [];
+        for (var key in item.info){                      /*can't use .map since item.info is an object, not an array*/
+          content.push(<p>{key}: {item.info[key]}</p>)
+        }
+        return {content}
+      };
       return (
-        <Tab key={item} title={tabTitle}>
+        <Tab key={item.name} title={tabTitle}>
 
           <Content>Content of {tabTitle} <br/> Tab number {tabIndex}
+            {tabContent()}
           </Content>
 
         </Tab>
@@ -79,14 +100,14 @@ var SidePane = React.createClass({
     return (
       <Panel ref="panel" theme="flexbox" skin={skin} useAvailableHeight={true} globals={globals} buttons={[
 
-          <Button title="Add another tab" onButtonClick={this.handleActionAddTab}>
-            <i className="fa fa-plus"></i>
-          </Button>,
+          //<Button title="Add another tab" onButtonClick={this.handleActionAddTab}>
+          //  <i className="fa fa-plus"></i>
+          //</Button>,
           <Button title="Remove active tab" onButtonClick={this.handleActionRemoveTab}>
             <i className="fa fa-times"></i>
           </Button>,
           <Button title="Drop down menu">
-          <div id="dropDown"><Dropdown list={this.state.tabState} changeTab={this.dropdownChange} /></div>
+          <div id="dropDown"><Dropdown changeTab={this.handleActionTabChangeViaOtherMeans} /></div>
           </Button>
         ]}>
         {tabs}
